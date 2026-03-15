@@ -50,7 +50,7 @@ async function main() {
 
   const office = offices[0];
   const officeId = office.id;
-  const orgId = office.organization_id;
+  const _orgId = office.organization_id;
   console.log(`事業所: ${office.name} (${office.office_number})`);
 
   // 事業所情報を更新（住所・電話を設定）
@@ -576,7 +576,6 @@ async function main() {
   // 11. 支援記録（2026年2月分）
   console.log("--- 支援記録 ---");
   // Phase 2テーブルの既存データ削除
-  const existClientIds = clients.map((c) => c.id);
   await supabase.from("support_records").delete().eq("office_id", officeId);
   await supabase.from("support_plan_reviews").delete().in(
     "plan_id",

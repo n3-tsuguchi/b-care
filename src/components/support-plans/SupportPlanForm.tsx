@@ -110,7 +110,7 @@ export function SupportPlanForm({ clients, officeId }: Props) {
 
       router.push("/support-plans");
       router.refresh();
-    } catch (e) {
+    } catch (_e) {
       alert("保存に失敗しました");
     } finally {
       setSaving(false);

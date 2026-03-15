@@ -154,7 +154,7 @@ export function SupportRecordBoard({ initialRecords, initialDate, officeId }: Pr
           );
         }
       }
-    } catch (e) {
+    } catch (_e) {
       alert("保存に失敗しました");
     } finally {
       setSavingIds((prev) => {

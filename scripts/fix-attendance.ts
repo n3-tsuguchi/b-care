@@ -15,7 +15,7 @@ const supabase = createClient(
 
 async function fix() {
   // 空office_idのレコードを検索
-  const { data: broken, error: e1 } = await supabase
+  const { data: broken, error: _e1 } = await supabase
     .from("attendances")
     .select("id, office_id, client_id")
     .eq("office_id", "");

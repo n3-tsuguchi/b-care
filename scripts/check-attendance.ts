@@ -28,7 +28,7 @@ async function check() {
   }
 
   // 今月のデータ
-  const { data: thisMonth, count: thisCount } = await supabase
+  const { data: _thisMonth, count: thisCount } = await supabase
     .from("attendances")
     .select("*", { count: "exact" })
     .gte("attendance_date", "2026-03-01")
@@ -36,7 +36,7 @@ async function check() {
   console.log("\nMarch 2026 records:", thisCount);
 
   // 2月データ
-  const { data: feb, count: febCount } = await supabase
+  const { data: _feb, count: febCount } = await supabase
     .from("attendances")
     .select("*", { count: "exact" })
     .gte("attendance_date", "2026-02-01")

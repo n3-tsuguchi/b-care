@@ -15,7 +15,7 @@ const supabase = createClient(
 
 async function check() {
   // support_records テーブルにアクセスできるか
-  const { data, error } = await supabase.from("support_records").select("*").limit(1);
+  const { data: _data, error } = await supabase.from("support_records").select("*").limit(1);
   console.log("support_records:", error ? `ERROR: ${error.message}` : "OK (exists)");
 
   const { error: e2 } = await supabase.from("individual_support_plans").select("*").limit(1);

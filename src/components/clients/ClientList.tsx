@@ -19,7 +19,7 @@ import {
   incomeCategoryLabels,
 } from "@/lib/constants";
 import type { ClientWithCertificate } from "@/lib/supabase/queries";
-import { Plus, Search, Filter, ChevronRight, X } from "lucide-react";
+import { Plus, Search, Filter, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 

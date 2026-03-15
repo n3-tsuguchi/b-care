@@ -10,6 +10,11 @@ import { WageStatementPdf, type WageStatementData } from "@/lib/pdf/wage-stateme
  * 工賃明細書PDF（個別利用者）
  */
 export async function GET(request: NextRequest) {
+  let pdfData: WageStatementData;
+  let clientFamilyName: string;
+  let year: number;
+  let month: number;
+
   try {
     registerFonts();
 
@@ -24,8 +29,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const year = parseInt(yearStr);
-    const month = parseInt(monthStr);
+    year = parseInt(yearStr);
+    month = parseInt(monthStr);
 
     const officeId = await getOfficeId();
     const supabase = await createServerSupabaseClient();
@@ -77,7 +82,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "工賃データが見つかりません" }, { status: 404 });
     }
 
-    const pdfData: WageStatementData = {
+    clientFamilyName = client.family_name;
+    pdfData = {
       clientName: `${client.family_name}${client.given_name}`,
       clientNumber: client.client_number,
       targetYearMonth: `${year}年${month}月分`,
@@ -90,19 +96,20 @@ export async function GET(request: NextRequest) {
       adjustment: wage.adjustment,
       totalWage: wage.total_wage,
     };
-
-    const buffer = new Uint8Array(await renderToBuffer(<WageStatementPdf data={pdfData} />));
-
-    const filename = `wage_${year}${String(month).padStart(2, "0")}_${client.family_name}.pdf`;
-
-    return new NextResponse(buffer, {
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
-      },
-    });
   } catch (error) {
     console.error("Wage statement PDF error:", error);
     return NextResponse.json({ error: "PDF生成に失敗しました" }, { status: 500 });
   }
+
+  const pdfElement = <WageStatementPdf data={pdfData} />;
+  const buffer = new Uint8Array(await renderToBuffer(pdfElement));
+
+  const filename = `wage_${year}${String(month).padStart(2, "0")}_${clientFamilyName}.pdf`;
+
+  return new NextResponse(buffer, {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
+    },
+  });
 }

@@ -271,7 +271,7 @@ export function AttendanceBoard({ initialRecords, initialDate, officeId }: Props
       {/* 出席入力カード */}
       <div className="grid gap-3">
         {records.map((record) => {
-          const config =
+          const _config =
             statusConfig[record.status as keyof typeof statusConfig] ||
             statusConfig[""];
 

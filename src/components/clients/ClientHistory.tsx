@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -96,29 +96,30 @@ function AttendanceHistory({ clientId }: { clientId: string }) {
     return { year: now.getFullYear(), month: now.getMonth() + 1 };
   });
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  useEffect(() => {
+    let cancelled = false;
     const supabase = createClient();
     const startDate = `${yearMonth.year}-${String(yearMonth.month).padStart(2, "0")}-01`;
     const endDay = new Date(yearMonth.year, yearMonth.month, 0).getDate();
     const endDate = `${yearMonth.year}-${String(yearMonth.month).padStart(2, "0")}-${String(endDay).padStart(2, "0")}`;
 
-    const { data } = await supabase
+    supabase
       .from("attendances")
       .select("attendance_date, status, check_in_time, check_out_time, pickup_outbound, pickup_inbound, meal_provided")
       .eq("client_id", clientId)
       .gte("attendance_date", startDate)
       .lte("attendance_date", endDate)
       .order("attendance_date", { ascending: true })
-      .returns<AttendanceHistoryRow[]>();
+      .returns<AttendanceHistoryRow[]>()
+      .then(({ data }) => {
+        if (!cancelled) {
+          setRecords(data ?? []);
+          setLoading(false);
+        }
+      });
 
-    setRecords(data ?? []);
-    setLoading(false);
+    return () => { cancelled = true; };
   }, [clientId, yearMonth]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   const changeMonth = (offset: number) => {
     setYearMonth((prev) => {

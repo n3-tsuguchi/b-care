@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { SupportPlan, SupportPlanGoal } from "@/lib/supabase/queries";
+import type { SupportPlan } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, Edit, CheckCircle, Target, Loader2, Plus, Save } from "lucide-react";
+import { ArrowLeft, Edit, CheckCircle, Target, Loader2, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const statusConfig: Record<string, { label: string; variant: "success" | "secondary" | "danger" | "default" }> = {
@@ -38,7 +38,7 @@ type Props = {
   officeId: string;
 };
 
-export function SupportPlanDetail({ plan, officeId }: Props) {
+export function SupportPlanDetail({ plan, officeId: _officeId }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);

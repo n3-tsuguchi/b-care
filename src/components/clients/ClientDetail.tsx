@@ -75,7 +75,7 @@ export function ClientDetail({ client }: Props) {
       if (error) throw error;
       setIsEditing(false);
       router.refresh();
-    } catch (e) {
+    } catch (_e) {
       alert("保存に失敗しました");
     } finally {
       setSaving(false);
