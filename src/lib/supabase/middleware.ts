@@ -4,6 +4,9 @@ import { NextResponse, type NextRequest } from "next/server";
 // 認証不要のパス
 const PUBLIC_PATHS = ["/login", "/signup", "/forgot-password", "/reset-password"];
 
+// 認証済みだがサブスクリプション不要のパス（課金ページ自体、API）
+const SUBSCRIPTION_FREE_PATHS = ["/subscription", "/api/stripe"];
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -60,6 +63,36 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url);
+  }
+
+  // サブスクリプションチェック（認証済み + 保護ページのみ）
+  const isSubscriptionFree = SUBSCRIPTION_FREE_PATHS.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  );
+
+  if (user && !isApiPath && !isSubscriptionFree) {
+    // usersテーブルからorganization_idを取得
+    const { data: profile } = await supabase
+      .from("users")
+      .select("organization_id")
+      .eq("id", user.id)
+      .single();
+
+    if (profile) {
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("status")
+        .eq("organization_id", profile.organization_id)
+        .in("status", ["trialing", "active"])
+        .limit(1)
+        .single();
+
+      if (!sub) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/subscription";
+        return NextResponse.redirect(url);
+      }
+    }
   }
 
   return supabaseResponse;

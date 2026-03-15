@@ -14,6 +14,7 @@ import {
   ChevronRight,
   ClipboardList,
   Target,
+  CreditCard,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -26,6 +27,7 @@ const navigation = [
   { name: "工賃管理", href: "/wages", icon: Coins },
   { name: "請求管理", href: "/billing", icon: FileText },
   { name: "設定", href: "/settings", icon: Settings },
+  { name: "サブスクリプション", href: "/subscription", icon: CreditCard },
 ];
 
 export function Sidebar() {
