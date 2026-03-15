@@ -43,9 +43,9 @@ type OfficeAdditionRow = {
 export async function POST(request: NextRequest) {
   try {
     const { year, month } = await request.json();
-    if (!year || !month) {
+    if (!year || !month || typeof year !== "number" || typeof month !== "number" || month < 1 || month > 12 || year < 2000 || year > 2100) {
       return NextResponse.json(
-        { error: "year and month are required" },
+        { error: "valid year (2000-2100) and month (1-12) are required" },
         { status: 400 }
       );
     }

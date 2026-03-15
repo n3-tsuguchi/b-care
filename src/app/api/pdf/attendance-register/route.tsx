@@ -24,8 +24,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "year, month are required" }, { status: 400 });
     }
 
-    const year = parseInt(yearStr);
-    const month = parseInt(monthStr);
+    const year = parseInt(yearStr, 10);
+    const month = parseInt(monthStr, 10);
+    if (isNaN(year) || isNaN(month) || month < 1 || month > 12 || year < 2000 || year > 2100) {
+      return NextResponse.json({ error: "valid year (2000-2100) and month (1-12) are required" }, { status: 400 });
+    }
     const daysInMonth = new Date(year, month, 0).getDate();
     const officeId = await getOfficeId();
     const supabase = await createServerSupabaseClient();

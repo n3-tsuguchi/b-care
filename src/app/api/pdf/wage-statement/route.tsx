@@ -29,8 +29,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    year = parseInt(yearStr);
-    month = parseInt(monthStr);
+    year = parseInt(yearStr, 10);
+    month = parseInt(monthStr, 10);
+    if (isNaN(year) || isNaN(month) || month < 1 || month > 12 || year < 2000 || year > 2100) {
+      return NextResponse.json({ error: "valid year (2000-2100) and month (1-12) are required" }, { status: 400 });
+    }
 
     const officeId = await getOfficeId();
     const supabase = await createServerSupabaseClient();
